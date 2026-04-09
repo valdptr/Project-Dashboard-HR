@@ -1,4 +1,4 @@
-import { toPng } from 'html-to-image';
+import { toJpeg } from 'html-to-image';
 import jsPDF from 'jspdf';
 
 export const exportDashboardToPDF = async (elementId: string, filename: string = 'dashboard-report.pdf') => {
@@ -12,11 +12,11 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
     }
 
     try {
-        // Step 1: Capture the dashboard as a high-res image
-        const dataUrl = await toPng(dashboardElement, {
-            quality: 1,
+        // Step 1: Capture the dashboard as a high-res JPG to save space
+        const dataUrl = await toJpeg(dashboardElement, {
+            quality: 0.85,
             backgroundColor: '#f5f7f9', // Lumina surface background
-            pixelRatio: 2, // High resolution for A4 print
+            pixelRatio: 1.5, // Reduced slightly to avoid massive 15MB Blobs
             style: {
                 // Ensure it captures fully without scrollbars
                 transform: 'scale(1)',
@@ -86,7 +86,7 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
         let pageHeightLeft = finalHeight;
         
         // Add the first slice
-        pdf.addImage(dataUrl, 'PNG', margin, yPosition, finalWidth, finalHeight);
+        pdf.addImage(dataUrl, 'JPEG', margin, yPosition, finalWidth, finalHeight);
         pageHeightLeft -= (pdfHeight - yPosition - margin); // subtract the visible area
 
         // Add additional pages if needed
@@ -97,7 +97,7 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
             // Calculate negative translation to shift the image up
             yPosition = yPosition - pdfHeight + (margin * 2);
             
-            pdf.addImage(dataUrl, 'PNG', margin, yPosition, finalWidth, finalHeight);
+            pdf.addImage(dataUrl, 'JPEG', margin, yPosition, finalWidth, finalHeight);
             
             pageHeightLeft -= (pdfHeight - margin * 2);
         }
