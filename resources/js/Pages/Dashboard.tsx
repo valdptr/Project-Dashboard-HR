@@ -1,33 +1,37 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Users, UserCheck, UserX, TrendingUp } from 'lucide-react';
+import { PieDonutChart } from '@/Components/Charts/PieDonutChart';
+import { SimpleBarChart } from '@/Components/Charts/SimpleBarChart';
+import { TrendAreaChart } from '@/Components/Charts/TrendAreaChart';
 
-export default function Dashboard() {
+export default function Dashboard({ dashboardData, filters }: any) {
+    const { overview, demographics, trends } = dashboardData || {};
+
     return (
-        <AuthenticatedLayout header="Dashboard">
-            <Head title="Dashboard" />
+        <AuthenticatedLayout header="Dashboard Analytics">
+            <Head title="Dashboard Analytics" />
 
             <div className="space-y-6">
-                {/* Welcome banner */}
-                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-700 p-6 text-white shadow-xl shadow-violet-500/20 sm:p-8">
-                    <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-                    <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-white/10 blur-2xl" />
-                    <div className="relative">
-                        <h1 className="text-2xl font-bold sm:text-3xl">Selamat Datang di HR Dashboard 👋</h1>
-                        <p className="mt-2 max-w-xl text-sm text-white/80">
-                            Kelola data karyawan, pantau statistik, dan buat laporan dengan mudah.
-                            Semua dalam satu platform yang terintegrasi.
-                        </p>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <h2 className="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100">
+                        Ringkasan Periode {filters?.year || new Date().getFullYear()}
+                    </h2>
+                    <div className="mt-2 flex gap-2 sm:mt-0">
+                        {/* Placeholder for filter dropdown */}
+                        <div className="inline-flex rounded-lg bg-white p-1 text-sm shadow-sm ring-1 ring-slate-200 dark:bg-slate-800 dark:ring-slate-700">
+                            <button className="rounded px-3 py-1 font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-100">Tahun Ini</button>
+                        </div>
                     </div>
                 </div>
 
-                {/* Placeholder stat cards */}
+                {/* Stat cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {[
-                        { label: 'Total Karyawan Aktif', value: '--', icon: Users, color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-500/10 dark:bg-blue-500/20' },
-                        { label: 'Karyawan Resign', value: '--', icon: UserX, color: 'from-rose-500 to-pink-500', bgColor: 'bg-rose-500/10 dark:bg-rose-500/20' },
-                        { label: 'Turnover Rate', value: '--%', icon: TrendingUp, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-500/10 dark:bg-amber-500/20' },
-                        { label: 'Retention Rate', value: '--%', icon: UserCheck, color: 'from-emerald-500 to-green-500', bgColor: 'bg-emerald-500/10 dark:bg-emerald-500/20' },
+                        { label: 'Total Karyawan Aktif', value: overview?.total_active || 0, icon: Users, color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-500/10 dark:bg-blue-500/20' },
+                        { label: 'Karyawan Resign', value: overview?.total_resigned || 0, icon: UserX, color: 'from-rose-500 to-pink-500', bgColor: 'bg-rose-500/10 dark:bg-rose-500/20' },
+                        { label: 'Turnover Rate', value: `${overview?.turnover_rate || 0}%`, icon: TrendingUp, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-500/10 dark:bg-amber-500/20' },
+                        { label: 'Retention Rate', value: `${overview?.retention_rate || 0}%`, icon: UserCheck, color: 'from-emerald-500 to-green-500', bgColor: 'bg-emerald-500/10 dark:bg-emerald-500/20' },
                     ].map((stat) => (
                         <div
                             key={stat.label}
@@ -47,18 +51,47 @@ export default function Dashboard() {
                     ))}
                 </div>
 
-                {/* Chart placeholder area */}
+                {/* Charts Grid */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    {['Distribusi Gender', 'Status Kepegawaian', 'Distribusi Region (POH)', 'Level Jabatan'].map((title) => (
-                        <div
-                            key={title}
-                            className="flex h-72 flex-col items-center justify-center rounded-xl border border-slate-200/50 bg-white p-6 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50"
-                        >
-                            <div className="h-16 w-16 animate-pulse rounded-full bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30" />
-                            <p className="mt-4 text-sm font-semibold text-slate-600 dark:text-slate-300">{title}</p>
-                            <p className="mt-1 text-xs text-slate-400">Chart akan ditampilkan di Fase 2</p>
+                    {/* Demographics - Gender */}
+                    <div className="flex h-[360px] flex-col rounded-xl border border-slate-200/50 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Distribusi Gender</h3>
+                        <div className="mt-4 flex-1">
+                            <PieDonutChart data={demographics?.gender} type="pie" />
                         </div>
-                    ))}
+                    </div>
+
+                    {/* Demographics - Status */}
+                    <div className="flex h-[360px] flex-col rounded-xl border border-slate-200/50 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Status Kepegawaian</h3>
+                        <div className="mt-4 flex-1">
+                            <PieDonutChart data={demographics?.status} type="donut" />
+                        </div>
+                    </div>
+
+                    {/* Turnover Trend */}
+                    <div className="col-span-1 flex h-[400px] flex-col rounded-xl border border-slate-200/50 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50 lg:col-span-2">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Tren Rekrutmen vs Resign {filters?.year || ''}</h3>
+                        <div className="mt-4 flex-1">
+                            <TrendAreaChart data={trends?.turnover_monthly} />
+                        </div>
+                    </div>
+
+                    {/* Demographics - POH */}
+                    <div className="flex h-[360px] flex-col rounded-xl border border-slate-200/50 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Distribusi POH (Region)</h3>
+                        <div className="mt-4 flex-1">
+                            <SimpleBarChart data={demographics?.poh} layout="horizontal" color="#ec4899" />
+                        </div>
+                    </div>
+
+                    {/* Demographics - Level */}
+                    <div className="flex h-[360px] flex-col rounded-xl border border-slate-200/50 bg-white p-5 shadow-sm dark:border-slate-700/50 dark:bg-slate-800/50">
+                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">Distribusi Level Jabatan</h3>
+                        <div className="mt-4 flex-1">
+                            <SimpleBarChart data={demographics?.level} layout="vertical" color="#14b8a6" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>
