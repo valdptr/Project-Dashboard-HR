@@ -4,8 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmployeeController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -18,10 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Placeholder routes for navigation (will be replaced in Fase 2-4)
-    Route::get('/employees', function () {
-        return Inertia::render('Dashboard'); // Placeholder
-    })->name('employees.index');
+    Route::resource('employees', EmployeeController::class);
 
     Route::get('/import', function () {
         return Inertia::render('Dashboard'); // Placeholder
