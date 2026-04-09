@@ -12,14 +12,10 @@ export default function Authenticated({
         <div className="bg-surface text-on-surface antialiased min-h-screen">
             {/* Sidebar Navigation Shell */}
             <aside className="h-screen w-64 hidden md:flex fixed left-0 top-0 bg-[#eef1f3] flex-col py-6 space-y-2 z-50 shadow-sm border-r border-outline-variant/10">
-                <div className="px-8 mt-2 mb-10">
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-                            <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
-                        </div>
-                        <h1 className="text-xl font-headline font-extrabold text-slate-900 tracking-tight">Lumina HR</h1>
-                    </div>
-                    <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-10">Intelligence Suite</p>
+                <div className="px-8 mt-4 mb-8">
+                    <Link href="/">
+                        <img src="/images/company-logo.png" alt="PT. SUMATERA BAHTERA RAYA" className="h-14 w-auto object-contain drop-shadow-sm" />
+                    </Link>
                 </div>
                 
                 <nav className="flex-1 space-y-1">

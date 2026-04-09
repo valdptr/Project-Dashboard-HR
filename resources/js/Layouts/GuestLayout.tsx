@@ -7,11 +7,8 @@ export default function Guest({ children }: PropsWithChildren) {
             {/* Left Side: Login Form Canvas */}
             <section className="w-full lg:w-1/2 flex flex-col justify-between p-8 md:p-12 lg:p-16 relative z-10 bg-surface">
                 {/* Brand Anchor */}
-                <div className="flex items-center gap-2 mb-12">
-                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-on-primary">
-                        <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
-                    </div>
-                    <span className="font-headline font-extrabold text-2xl tracking-tighter text-on-surface">Lumina HR</span>
+                <div className="flex items-center mb-10 w-full sm:max-w-md mt-6 sm:mt-0 p-4 sm:p-0">
+                    <img src="/images/company-logo.png" alt="PT. SUMATERA BAHTERA RAYA" className="h-14 w-auto object-contain drop-shadow-sm" />
                 </div>
 
                 {/* Content Area */}

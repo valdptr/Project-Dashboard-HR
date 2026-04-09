@@ -23,6 +23,15 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
             }
         });
 
+        // Load logo
+        const loadLogo = (): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = '/images/company-logo.png';
+        });
+        const logoImg = await loadLogo();
+
         // Step 2: Initialize jsPDF as A4 Portrait
         const pdf = new jsPDF({
             orientation: 'portrait',
@@ -36,23 +45,19 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
 
         // Step 3: Draw Kop Surat (Letterhead) on the first page
         const drawHeader = (doc: jsPDF) => {
-            // Draw Logo Box
-            doc.setFillColor(0, 87, 189); // Primary blue
-            doc.rect(margin, margin, 12, 12, 'F');
-            doc.setFont("helvetica", "bold");
-            doc.setTextColor(255, 255, 255);
-            doc.setFontSize(11);
-            doc.text("HR", margin + 2.5, margin + 8.5);
+            // Draw Logo Image (scaling appropriately, e.g. 40mm x 15mm depending on aspect ratio)
+            doc.addImage(logoImg, 'PNG', margin, margin, 40, 15);
 
             // Company Info
             doc.setTextColor(40, 40, 40);
-            doc.setFontSize(14);
-            doc.text("Lumina Intelligence, Inc.", margin + 15, margin + 4.5);
+            doc.setFontSize(13);
+            doc.setFont("helvetica", "bold");
+            doc.text("PT. SUMATERA BAHTERA RAYA", margin + 45, margin + 4.5);
             doc.setFont("helvetica", "normal");
             doc.setFontSize(9);
             doc.setTextColor(100, 100, 100);
-            doc.text("Gedung Sudirman Tower Lt. 12, Jl. Jend. Sudirman", margin + 15, margin + 9);
-            doc.text("Jakarta Selatan, 12190 - Indonesia", margin + 15, margin + 13);
+            doc.text("35226, Jl. Yos Sudarso No.281, Sukaraja, Kec. Bumi Waras", margin + 45, margin + 9);
+            doc.text("Kota Bandar Lampung, Lampung 35226", margin + 45, margin + 13);
 
             // Report Meta Info
             doc.setFont("helvetica", "bold");

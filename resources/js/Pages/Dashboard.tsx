@@ -13,7 +13,7 @@ export default function Dashboard({ dashboardData }: any) {
     const handleExport = async () => {
         setIsExporting(true);
         try {
-            await exportDashboardToPDF('dashboard-content', `Lumina-Insights-${new Date().getFullYear()}.pdf`);
+            await exportDashboardToPDF('dashboard-content', `SBR-Insights-${new Date().getFullYear()}.pdf`);
         } finally {
             setIsExporting(false);
         }
