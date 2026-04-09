@@ -16,7 +16,7 @@ Membangun sistem **HR Dashboard** komprehensif dari awal dengan fitur: Dashboard
 | **Styling** | Tailwind CSS v4 | Dark mode dengan `dark:` class, rapid prototyping |
 | **UI Components** | shadcn/ui | Premium, accessible components |
 | **Charts** | Recharts | SVG-based, theme-aware, React-native |
-| **Database** | SQLite (dev) / PostgreSQL (prod) | Laravel default, mudah setup |
+| **Database** | PostgreSQL | Sesuai request user, PostgreSQL untuk dev & prod |
 | **Excel** | Maatwebsite Laravel Excel (PhpSpreadsheet) | Native Laravel validation, template generation |
 | **PDF Export** | jsPDF + html-to-image | Client-side chart capture, no server overhead |
 
