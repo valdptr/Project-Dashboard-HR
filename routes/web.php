@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ImportController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -20,9 +21,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('employees', EmployeeController::class);
 
-    Route::get('/import', function () {
-        return Inertia::render('Dashboard'); // Placeholder
-    })->middleware('role:admin')->name('import.index');
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/import', [ImportController::class, 'index'])->name('import.index');
+        Route::post('/import', [ImportController::class, 'upload'])->name('import.upload');
+        Route::get('/import/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
+    });
 });
 
 require __DIR__.'/auth.php';
