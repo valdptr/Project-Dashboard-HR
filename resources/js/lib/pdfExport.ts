@@ -24,10 +24,13 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
         });
 
         // Load logo
-        const loadLogo = (): Promise<HTMLImageElement> => new Promise((resolve, reject) => {
+        const loadLogo = (): Promise<HTMLImageElement | null> => new Promise((resolve) => {
             const img = new Image();
             img.onload = () => resolve(img);
-            img.onerror = reject;
+            img.onerror = () => {
+                console.warn("Logo failed to load");
+                resolve(null); // Resolve to null so it doesn't crash the PDF generator
+            };
             img.src = '/images/company-logo.png';
         });
         const logoImg = await loadLogo();
@@ -45,8 +48,10 @@ export const exportDashboardToPDF = async (elementId: string, filename: string =
 
         // Step 3: Draw Kop Surat (Letterhead) on the first page
         const drawHeader = (doc: jsPDF) => {
-            // Draw Logo Image (scaling appropriately, e.g. 40mm x 15mm depending on aspect ratio)
-            doc.addImage(logoImg, 'PNG', margin, margin, 40, 15);
+            // Draw Logo Image if it exists
+            if (logoImg) {
+                doc.addImage(logoImg, 'PNG', margin, margin, 40, 15);
+            }
 
             // Company Info
             doc.setTextColor(40, 40, 40);
