@@ -36,9 +36,9 @@ export default function Authenticated({
                     </Link>
                     
                     <Link
-                        href={route('employee.index')}
+                        href={route('employees.index')}
                         className={`flex items-center px-8 py-3 transition-all duration-200 ${
-                            url.startsWith('/employee') 
+                            url.startsWith('/employees') 
                                 ? 'text-primary border-r-4 border-primary bg-white/60 font-semibold' 
                                 : 'text-slate-600 hover:bg-white/30 font-medium'
                         }`}
