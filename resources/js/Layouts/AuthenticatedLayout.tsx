@@ -1,132 +1,110 @@
 import { Link, usePage } from '@inertiajs/react';
-import { PropsWithChildren, ReactNode, useState, useEffect } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import { LayoutDashboard, Users, UserPlus, LogOut, ChevronDown, Bell, Search, Settings, UploadCloud } from 'lucide-react';
+import { PropsWithChildren, ReactNode } from 'react';
 
-export default function AuthenticatedLayout({ header, children }: PropsWithChildren<{ header?: ReactNode }>) {
-    const { auth } = usePage().props as any;
-    const isAdmin = auth.user.role === 'admin';
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-
-    // Force Dark Theme for Stitch Design
-    useEffect(() => {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('bg-[#050511]', 'text-slate-200');
-    }, []);
-
-    const navigation = [
-        { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard },
-        { name: 'Analytics', href: '#', icon: Search },
-        { name: 'Workforce', href: route('employees.index'), icon: Users },
-        // Only admin sees import
-        ...(isAdmin ? [{ name: 'Data Upload', href: route('import.index'), icon: UploadCloud }] : []),
-    ];
+export default function Authenticated({
+    header,
+    children,
+}: PropsWithChildren<{ header?: ReactNode }>) {
+    const user = usePage().props.auth.user;
+    const { url } = usePage();
 
     return (
-        <div className="min-h-screen bg-[#050511] font-sans text-slate-300 selection:bg-fuchsia-500/30">
-            {/* Sidebar Left */}
-            <aside className="fixed inset-y-0 left-0 z-50 w-64 flex-col border-r border-white/5 bg-[#0A0A18] hidden md:flex">
-                <div className="flex h-20 items-center px-6">
-                    <Link href="/" className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-fuchsia-600 to-indigo-600 shadow-lg shadow-indigo-500/20">
-                            <ApplicationLogo className="h-6 w-6 text-white" />
+        <div className="bg-surface text-on-surface antialiased min-h-screen">
+            {/* Sidebar Navigation Shell */}
+            <aside className="h-screen w-64 hidden md:flex fixed left-0 top-0 bg-[#eef1f3] flex-col py-6 space-y-2 z-50 shadow-sm border-r border-outline-variant/10">
+                <div className="px-8 mt-2 mb-10">
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+                            <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>insights</span>
                         </div>
-                        <span className="text-xl font-bold tracking-wider text-white">
-                            KINETIC<span className="text-fuchsia-500">HR</span>
-                        </span>
-                    </Link>
-                </div>
-
-                <div className="px-6 py-4">
-                    <div className="rounded-xl border border-white/5 bg-white/5 p-4 backdrop-blur-md">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 flex-shrink-0 animate-pulse rounded-full bg-gradient-to-tr from-cyan-400 to-fuchsia-500 p-0.5">
-                                <div className="h-full w-full rounded-full bg-[#0A0A18] border-2 border-transparent object-cover">
-                                    <div className="h-full w-full rounded-full bg-white/10" />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-xs font-semibold text-white">{auth.user.name}</p>
-                                <p className="text-[10px] uppercase tracking-wider text-fuchsia-400">
-                                    {isAdmin ? 'Executive Portal' : 'Viewer Portal'}
-                                </p>
-                            </div>
-                        </div>
+                        <h1 className="text-xl font-headline font-extrabold text-slate-900 tracking-tight">Lumina HR</h1>
                     </div>
+                    <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold ml-10">Intelligence Suite</p>
                 </div>
-
-                <nav className="flex-1 space-y-1 px-4 py-4">
-                    <p className="px-2 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                        Main Menu
-                    </p>
-                    {navigation.map((item) => {
-                        const active = route().current(item.name === 'Data Upload' ? 'import.*' : (item.name === 'Workforce' ? 'employees.*' : 'dashboard'));
-                        const Icon = item.icon;
-                        return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-all duration-300 ${
-                                    active
-                                        ? 'bg-fuchsia-500/10 text-fuchsia-400 shadow-[inset_4px_0_0_0_rgb(232,121,249)]'
-                                        : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
-                                }`}
-                            >
-                                <Icon className={`h-5 w-5 ${active ? 'text-fuchsia-400' : 'text-slate-500'}`} />
-                                {item.name}
-                            </Link>
-                        );
-                    })}
-                </nav>
-
-                <div className="p-4">
+                
+                <nav className="flex-1 space-y-1">
                     <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="flex w-full items-center gap-3 rounded-xl bg-white/5 px-4 py-3 text-sm font-medium text-slate-400 transition-colors hover:bg-rose-500/10 hover:text-rose-400"
+                        href={route('dashboard')}
+                        className={`flex items-center px-8 py-3 transition-all duration-200 ${
+                            url.startsWith('/dashboard') 
+                                ? 'text-primary border-r-4 border-primary bg-white/60 font-semibold' 
+                                : 'text-slate-600 hover:bg-white/30 font-medium'
+                        }`}
                     >
-                        <LogOut className="h-5 w-5" />
-                        Logout
+                        <span className="material-symbols-outlined mr-4">dashboard</span>
+                        <span className="text-[13px]">Dashboard</span>
                     </Link>
+                    
+                    <Link
+                        href={route('employee.index')}
+                        className={`flex items-center px-8 py-3 transition-all duration-200 ${
+                            url.startsWith('/employee') 
+                                ? 'text-primary border-r-4 border-primary bg-white/60 font-semibold' 
+                                : 'text-slate-600 hover:bg-white/30 font-medium'
+                        }`}
+                    >
+                        <span className="material-symbols-outlined mr-4">groups</span>
+                        <span className="text-[13px]">Workforce</span>
+                    </Link>
+                </nav>
+                
+                <div className="px-6 mt-auto space-y-4">
+                    <button className="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold text-sm shadow-sm hover:opacity-90 hover:shadow-md transition-all active:scale-95">
+                        Create Report
+                    </button>
+                    <div className="pt-4 border-t border-outline-variant/10 space-y-1">
+                        <Link href="#" className="flex items-center px-2 py-2 text-slate-600 hover:text-primary transition-colors">
+                            <span className="material-symbols-outlined mr-3 text-[20px]">help</span>
+                            <span className="text-xs font-medium">Support</span>
+                        </Link>
+                        <Link method="post" href={route('logout')} as="button" className="w-full flex items-center px-2 py-2 text-slate-600 hover:text-error transition-colors">
+                            <span className="material-symbols-outlined mr-3 text-[20px]">logout</span>
+                            <span className="text-xs font-medium">Sign Out</span>
+                        </Link>
+                    </div>
                 </div>
             </aside>
 
-            {/* Main Content Area */}
-            <div className="flex flex-1 flex-col md:pl-64">
-                {/* Top Nav */}
-                <header className="sticky top-0 z-40 border-b border-white/5 bg-[#050511]/80 backdrop-blur-xl">
-                    <div className="flex h-20 items-center justify-between px-6 lg:px-8">
-                        <div className="flex flex-1 items-center gap-4">
-                            {header && <h1 className="text-2xl font-semibold tracking-tight text-white">{header}</h1>}
-                        </div>
-                        <div className="flex items-center gap-6">
-                            {/* Search */}
-                            <div className="relative hidden lg:block">
-                                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                                <input
-                                    type="text"
-                                    placeholder="Search pulse..."
-                                    className="h-10 w-64 rounded-full border border-white/10 bg-[#0A0A18] pl-10 pr-4 text-sm text-white placeholder-slate-500 ring-offset-slate-950 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
-                                />
+            {/* Main Content Canvas */}
+            <main className="md:ml-64 min-h-screen flex flex-col">
+                {/* Top Bar */}
+                <header className="w-full sticky top-0 z-40 bg-surface/95 backdrop-blur-md flex justify-between items-center px-4 md:px-8 h-16 border-b border-outline-variant/10">
+                    <div className="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-64 md:w-96 border border-outline-variant/10 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/30 transition-all">
+                        <span className="material-symbols-outlined text-on-surface-variant text-[20px] mr-2">search</span>
+                        <input className="bg-transparent border-none focus:ring-0 p-0 text-sm w-full placeholder:text-on-surface-variant outline-none" placeholder="Search analytics..." type="text"/>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 md:space-x-4">
+                        <button className="p-2 text-on-surface-variant hover:bg-slate-200/50 rounded-full transition-colors relative">
+                            <span className="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-error ring-2 ring-surface"></span>
+                            <span className="material-symbols-outlined text-[22px]">notifications</span>
+                        </button>
+                        <button className="p-2 text-on-surface-variant hover:bg-slate-200/50 rounded-full transition-colors hidden sm:block">
+                            <span className="material-symbols-outlined text-[22px]">settings</span>
+                        </button>
+                        
+                        <div className="flex items-center ml-2 pl-2 md:ml-4 md:pl-4 border-l border-outline-variant/20 cursor-pointer hover:opacity-80 transition-opacity">
+                            <div className="text-right mr-3 hidden sm:block">
+                                <p className="text-xs font-bold text-on-surface capitalize">{user.name}</p>
+                                <p className="text-[10px] text-on-surface-variant capitalize">{user.role}</p>
                             </div>
-                            <button className="relative text-slate-400 hover:text-white">
-                                <Bell className="h-5 w-5" />
-                                <span className="absolute -right-1 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-cyan-500 text-[8px] font-bold text-black">
-                                    3
-                                </span>
-                            </button>
-                            <button className="text-slate-400 hover:text-white">
-                                <Settings className="h-5 w-5" />
-                            </button>
+                            <div className="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm shadow-sm ring-2 ring-surface-container-low">
+                                {user.name.charAt(0).toUpperCase()}
+                            </div>
                         </div>
                     </div>
                 </header>
 
-                <main className="flex-1 p-6 lg:p-8">
+                {/* Content */}
+                <div className="p-4 md:p-8 max-w-7xl mx-auto w-full flex-1">
                     {children}
-                </main>
-            </div>
+                </div>
+            </main>
+
+            {/* Mobile Sidebar Toggle (Optional but good practice) */}
+            <button className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-105 transition-transform z-50">
+                <span className="material-symbols-outlined text-2xl">menu</span>
+            </button>
         </div>
     );
 }
